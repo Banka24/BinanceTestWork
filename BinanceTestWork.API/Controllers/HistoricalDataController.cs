@@ -1,6 +1,7 @@
 ﻿using BinanceTestWork.Core.Application.Commands;
 using BinanceTestWork.Core.Application.DTO;
 using BinanceTestWork.Core.Application.Querries;
+using CryptoExchange.Net.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,12 +44,17 @@ namespace BinanceTestWork.API.Controllers
         /// <param name="request">Запрос для проверки статуса.</param>
         /// <returns>Результат проверки статуса.</returns>
         [HttpGet("status")]
-        public async Task<IActionResult> Status([FromQuery] CheckStatusJobQuery request)
+        public async Task<IActionResult> Status([FromQuery] string jobId)
         {
             string errorMessage = "";
             JobDTO jobDTO = null!;
             try
             {
+                var request = new CheckStatusJobQuery()
+                {
+                    JobId = Guid.Parse(jobId)
+                };
+
                 jobDTO = await _mediator.Send(request);
             }
             catch(KeyNotFoundException ex)
